@@ -118,6 +118,7 @@ body {
     height: 80px;
     width: 80px;
     display: block;
+    margin: -20px 0;
 }
 
 .dock-nav {
