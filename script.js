@@ -3,6 +3,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 setupScrollAnimations();
 setupDockAnimation();
+setupThemeToggle();
 
 function setupScrollAnimations() {
     // Initial entrance GSAP
@@ -119,5 +120,22 @@ function setupDockAnimation() {
     window.addEventListener('resize', () => {
         const currentActive = document.querySelector('.dock-link.active');
         moveBubble(currentActive, true);
+    });
+}
+
+function setupThemeToggle() {
+    const toggleBtn = document.getElementById('theme-toggle');
+    if (!toggleBtn) return;
+
+    // Default to dark mode if not set, or retrieve saved theme
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+
+    toggleBtn.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
     });
 }
