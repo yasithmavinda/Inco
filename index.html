@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inco - Futuristic Smart Mailbox</title>
+    
+    <!-- Fonts: Inter for minimal tech feel -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- GSAP for smooth animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+</head>
+<body>
+
+
+    <!-- Live Status Mock UI -->
+    <div class="live-status glass-panel">
+        <div class="status-dot"></div>
+        <span>Live Status: Mail Detected</span>
+    </div>
+
+    <!-- Main Scrollable Content -->
+    <main class="content-wrapper">
+        
+        <!-- Centered Floating Taskbar / Header -->
+        <header class="floating-header">
+            <div class="dock-container glass-panel">
+                <div class="dock-logo">INCO.</div>
+                <nav class="dock-nav">
+                    <div class="dock-bubble"></div>
+                    <a href="#hero" class="dock-link active" data-index="0">
+                        <i class="fa-solid fa-house"></i>
+                        <span class="dock-label">Home</span>
+                    </a>
+                    <a href="#features" class="dock-link" data-index="1">
+                        <i class="fa-solid fa-star"></i>
+                        <span class="dock-label">Features</span>
+                    </a>
+                    <a href="#how-it-works" class="dock-link" data-index="2">
+                        <i class="fa-solid fa-circle-play"></i>
+                        <span class="dock-label">Process</span>
+                    </a>
+                    <a href="#tech" class="dock-link" data-index="3">
+                        <i class="fa-solid fa-microchip"></i>
+                        <span class="dock-label">Tech Setup</span>
+                    </a>
+                    <a href="#gallery" class="dock-link" data-index="4">
+                        <i class="fa-solid fa-images"></i>
+                        <span class="dock-label">Gallery</span>
+                    </a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section id="hero" class="hero-section">
+            <div class="hero-content">
+                <h1 class="headline">Smarter Mail.<br><span class="highlight">Safer Deliveries.</span></h1>
+                <p class="subheadline">A next-generation IoT-powered mailbox with real-time alerts, solar charging, and built-in security.</p>
+                <div class="cta-group">
+                    <button class="btn btn-primary">Get Started</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="features-section">
+            <h2 class="section-title">Beyond a Box.</h2>
+            <div class="feature-grid">
+                <div class="feature-card glass-panel">
+                    <i class="fa-solid fa-bell icon-highlight"></i>
+                    <h3>Real-time Alerts</h3>
+                    <p>Instant mobile notifications the second mail is dropped.</p>
+                </div>
+                <div class="feature-card glass-panel">
+                    <i class="fa-solid fa-camera icon-highlight"></i>
+                    <h3>Motion Camera</h3>
+                    <p>Built-in HD camera capturing all activity near your post.</p>
+                </div>
+                <div class="feature-card glass-panel">
+                    <i class="fa-solid fa-sun icon-highlight"></i>
+                    <h3>Solar Powered</h3>
+                    <p>Self-sustaining operation. Zero wiring required.</p>
+                </div>
+                <div class="feature-card glass-panel">
+                    <i class="fa-solid fa-lock icon-highlight"></i>
+                    <h3>Smart Lock</h3>
+                    <p>Anti-theft locking system secured with banking-grade encryption.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section id="how-it-works" class="how-it-works-section">
+            <h2 class="section-title">Seamless Experience.</h2>
+            <div class="steps-container">
+                <div class="step glass-panel">
+                    <div class="step-num">01</div>
+                    <div class="step-content">
+                        <h4>Mail Arrives</h4>
+                        <p>Courier deposits packages safely into the secure drop bay.</p>
+                    </div>
+                </div>
+                <div class="step glass-panel">
+                    <div class="step-num">02</div>
+                    <div class="step-content">
+                        <h4>Sensors Activate</h4>
+                        <p>Weight and motion sensors trigger the internal logic.</p>
+                    </div>
+                </div>
+                <div class="step glass-panel">
+                    <div class="step-num">03</div>
+                    <div class="step-content">
+                        <h4>Instant Ping</h4>
+                        <p>Your mobile app receives a push notification and live preview.</p>
+                    </div>
+                </div>
+                <div class="step glass-panel">
+                    <div class="step-num">04</div>
+                    <div class="step-content">
+                        <h4>Secure Access</h4>
+                        <p>Unlock your Inco mailbox via Bluetooth right from your phone.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tech Section -->
+        <section id="tech" class="tech-section">
+            <div class="tech-content">
+                <h2 class="section-title">Under the Hood.</h2>
+                <div class="tech-specs">
+                    <div class="spec-row">
+                        <span class="spec-label">Connectivity</span>
+                        <span class="spec-val">WiFi 6 & Bluetooth 5.2</span>
+                    </div>
+                    <div class="spec-row">
+                        <span class="spec-label">AI Processing</span>
+                        <span class="spec-val">Edge Detection Neural Core</span>
+                    </div>
+                    <div class="spec-row">
+                        <span class="spec-label">Power</span>
+                        <span class="spec-val">Li-ion 10,000mAh + 15W Solar</span>
+                    </div>
+                    <div class="spec-row">
+                        <span class="spec-label">Durability</span>
+                        <span class="spec-val">IP67 Weather-resistant</span>
+                    </div>
+                </div>
+            </div>
+            <div class="tech-visuals">
+                <div class="mock-phone glass-panel">
+                    <div class="phone-screen">
+                        <div class="app-header">Inco App</div>
+                        <div class="app-status">
+                            <i class="fa-solid fa-shield-check" style="color:#00d2ff; font-size: 2rem;"></i>
+                            <p>System Armed</p>
+                        </div>
+                        <div class="app-log">
+                            <div class="log-item">Package Delivered - 2:40 PM</div>
+                            <div class="log-item">Motion Detected - 10:15 AM</div>
+                        </div>
+                        <button class="app-btn">Unlock Mailbox</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gallery / Footer -->
+        <footer id="gallery" class="footer-section">
+            <div class="footer-content">
+                <h2>Ready for the future of delivery?</h2>
+                <p>Reserve your Inco Smart Mailbox today.</p>
+                <div class="footer-links">
+                    <a href="#">Privacy</a>
+                    <a href="#">Terms</a>
+                    <a href="#">Support</a>
+                </div>
+                <div class="socials">
+                    <i class="fa-brands fa-twitter"></i>
+                    <i class="fa-brands fa-instagram"></i>
+                    <i class="fa-brands fa-github"></i>
+                </div>
+                <p class="copyright">© 2026 Inco IoT Systems. All rights reserved.</p>
+            </div>
+        </footer>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
