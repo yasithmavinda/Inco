@@ -42,23 +42,23 @@ body {
     position: fixed;
     top: 20px;
     right: 20px;
-    padding: 10px 20px;
+    padding: 6px 14px;
     border-radius: 30px;
     display: flex;
     align-items: center;
-    gap: 12px;
-    font-size: 0.9rem;
+    gap: 8px;
+    font-size: 0.75rem;
     font-weight: 500;
     z-index: 100;
     pointer-events: none;
 }
 
 .status-dot {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     background-color: var(--accent);
     border-radius: 50%;
-    box-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent);
+    box-shadow: 0 0 8px var(--accent), 0 0 16px var(--accent);
     animation: pulse 2s infinite;
 }
 
