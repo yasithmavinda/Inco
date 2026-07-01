@@ -114,6 +114,7 @@ body {
     user-select: none;
 }
 
+/* Optimized logo styling for navigation bar */
 .logo-img {
     height: 80px;
     width: 80px;
