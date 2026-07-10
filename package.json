@@ -1,0 +1,8 @@
+{
+  "name": "inco",
+  "version": "1.0.0",
+  "description": "Inco project",
+  "scripts": {
+    "dev": "npx live-server"
+  }
+}

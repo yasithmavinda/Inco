@@ -3,209 +3,530 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inco - Futuristic Smart Mailbox</title>
+    <title>Inco — Smart Mailbox. Reinvented.</title>
+    <meta name="description" content="Inco is the next-generation, solar-powered smart mailbox. Stay connected to your deliveries with instant notifications, robust digital security, and an elegant ambient status display.">
     
-    <!-- Fonts: Inter for minimal tech feel -->
+    <!-- Fonts: Inter & Outfit for modern aesthetic -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- CSS -->
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="styles.css">
     
-    <!-- GSAP for smooth animations -->
+    <!-- GSAP & ScrollTrigger -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <!-- Lenis Smooth Scroll -->
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
+    
+    <!-- Three.js for 3D Mailbox -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
+    <!-- Fixed 3D Mailbox Canvas Container -->
+    <div id="mailbox-canvas-container"></div>
 
-
-    <!-- Top Right Utility Bar -->
-    <div class="top-right-bar">
-        <!-- Theme Toggle -->
-        <button id="theme-toggle" class="theme-toggle-btn glass-panel" aria-label="Toggle Theme">
-            <div class="toggle-track">
-                <i class="fa-solid fa-sun icon-sun"></i>
-                <i class="fa-solid fa-moon icon-moon"></i>
-                <div class="toggle-thumb"></div>
-            </div>
-        </button>
-
-        <!-- Live Status Mock UI -->
-        <div class="live-status glass-panel">
-            <div class="status-dot"></div>
-            <span>Live Status: Mail Detected</span>
+    <!-- Projected Coordinate Labels Overlay (Linked to 3D anchors) -->
+    <div class="labels-layer">
+        <div id="tooltip-solar" class="projected-tooltip">
+            <div class="tooltip-dot"></div>
+            <div class="tooltip-card">Solar Panel Strip</div>
+        </div>
+        <div id="tooltip-led" class="projected-tooltip">
+            <div class="tooltip-dot"></div>
+            <div class="tooltip-card">Electric LED Strip</div>
+        </div>
+        <div id="tooltip-display" class="projected-tooltip">
+            <div class="tooltip-dot"></div>
+            <div class="tooltip-card">OLED Display</div>
+        </div>
+        <div id="tooltip-lock" class="projected-tooltip">
+            <div class="tooltip-dot"></div>
+            <div class="tooltip-card">tamper-Proof Lock</div>
+        </div>
+        <div id="tooltip-bracket" class="projected-tooltip">
+            <div class="tooltip-dot"></div>
+            <div class="tooltip-card">Universal Mount</div>
         </div>
     </div>
 
-    <!-- Main Scrollable Content -->
+    <!-- Top Right Utility / Status Bar -->
+    <div class="top-right-bar">
+        <!-- Live Status Bar -->
+        <div class="live-status glass-panel">
+            <div class="status-dot"></div>
+            <span>System: Armed</span>
+        </div>
+        <!-- Theme Toggle -->
+        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Theme">
+            <i class="fa-solid fa-moon"></i>
+        </button>
+    </div>
+
+    <!-- Floating Dock Header -->
+    <header class="floating-header">
+        <div class="dock-container">
+            <div class="dock-logo">
+                <a href="#hero" class="logo-text">
+                    Inco <div class="logo-dot"></div>
+                </a>
+            </div>
+            <nav class="dock-nav">
+                <div class="dock-bubble"></div>
+                <a href="#hero" class="dock-link active">
+                    <i class="fa-solid fa-house"></i>
+                    <span class="dock-label">Home</span>
+                </a>
+                <a href="#reveal" class="dock-link">
+                    <i class="fa-solid fa-compass"></i>
+                    <span class="dock-label">Explore</span>
+                </a>
+                <a href="#features" class="dock-link">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span class="dock-label">Features</span>
+                </a>
+                <a href="#audience" class="dock-link">
+                    <i class="fa-solid fa-users"></i>
+                    <span class="dock-label">Use Cases</span>
+                </a>
+                <a href="#faq" class="dock-link">
+                    <i class="fa-solid fa-circle-question"></i>
+                    <span class="dock-label">FAQ</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
     <main class="content-wrapper">
         
-        <!-- Centered Floating Taskbar / Header -->
-        <header class="floating-header">
-            <div class="dock-container glass-panel">
-                <div class="dock-logo">
-                    <img src="resources/logo.png" alt="Visionix Logo" class="logo-img">
-                </div>
-                <nav class="dock-nav">
-                    <div class="dock-bubble"></div>
-                    <a href="#hero" class="dock-link active" data-index="0">
-                        <i class="fa-solid fa-house"></i>
-                        <span class="dock-label">Home</span>
-                    </a>
-                    <a href="#features" class="dock-link" data-index="1">
-                        <i class="fa-solid fa-star"></i>
-                        <span class="dock-label">Features</span>
-                    </a>
-                    <a href="#how-it-works" class="dock-link" data-index="2">
-                        <i class="fa-solid fa-circle-play"></i>
-                        <span class="dock-label">Process</span>
-                    </a>
-                    <a href="#tech" class="dock-link" data-index="3">
-                        <i class="fa-solid fa-microchip"></i>
-                        <span class="dock-label">Tech Setup</span>
-                    </a>
-                    <a href="#gallery" class="dock-link" data-index="4">
-                        <i class="fa-solid fa-images"></i>
-                        <span class="dock-label">Gallery</span>
-                    </a>
-                </nav>
-            </div>
-        </header>
-
         <!-- Hero Section -->
         <section id="hero" class="hero-section">
             <div class="hero-content">
-                <h1 class="headline">Smarter Mail.<br><span class="highlight">Safer Deliveries.</span></h1>
-                <p class="subheadline">A next-generation IoT-powered mailbox with real-time alerts, solar charging, and built-in security.</p>
+                <span class="eyebrow">The Future of Mail Delivery</span>
+                <h1 class="headline">Mail, <span class="highlight">Reinvented.</span></h1>
+                <p class="subheadline">A solar-powered smart mailbox with real-time push alerts, encrypted Bluetooth access, and a sleek ambient LED status bar. Built for modern deliveries.</p>
                 <div class="cta-group">
-                    <button class="btn btn-primary">Get Started</button>
+                    <a href="#reveal" class="btn btn-primary">Explore Features <i class="fa-solid fa-arrow-down"></i></a>
+                    <a href="#faq" class="btn btn-secondary">Get Support</a>
+                </div>
+            </div>
+            
+            <div class="scroll-indicator">
+                <div class="scroll-line"></div>
+                <span>Scroll to Explore</span>
+            </div>
+        </section>
+
+        <!-- Scroll-Driven Product Reveal Section (The "Flowty Moment") -->
+        <section id="reveal" class="reveal-section">
+            <div class="reveal-sticky">
+                <!-- Three.js Canvas runs in fixed layer behind/around, but we align labels inside this sticky box context -->
+            </div>
+            
+            <div class="reveal-steps">
+                <!-- Step 1: Solar Panel -->
+                <div class="reveal-step" data-step="solar">
+                    <div class="step-card glass-panel">
+                        <span class="eyebrow">01 / POWER</span>
+                        <h2>Self-Charging Solar Panel</h2>
+                        <p>A top-mounted monocrystalline solar strip harvests sunlight to power the internal 10,000mAh battery. Completely wire-free, self-sustaining operation that works even on overcast days.</p>
+                    </div>
+                </div>
+
+                <!-- Step 2: LED Accent -->
+                <div class="reveal-step" data-step="led">
+                    <div class="step-card glass-panel">
+                        <span class="eyebrow">02 / VISIBILITY</span>
+                        <h2>Ambient LED Status Bar</h2>
+                        <p>A striking horizontal blue light bar across the front communicates mailbox status. Pulsing cyan means mail is inside, blinking white indicates a courier is scanning, and amber alerts warn you of tamper attempts.</p>
+                    </div>
+                </div>
+
+                <!-- Step 3: OLED Status Display -->
+                <div class="reveal-step" data-step="display">
+                    <div class="step-card glass-panel">
+                        <span class="eyebrow">03 / INTERACTION</span>
+                        <h2>OLED Courier Interface</h2>
+                        <p>A side-mounted crisp OLED display guides delivery drivers. Shows confirmation prompts like "Package Registered," battery indicators, and Wi-Fi connection strength.</p>
+                    </div>
+                </div>
+
+                <!-- Step 4: Tamper Lock -->
+                <div class="reveal-step" data-step="lock">
+                    <div class="step-card glass-panel">
+                        <span class="eyebrow">04 / INTEGRITY</span>
+                        <h2>Encrypted Electronic Lock</h2>
+                        <p>Our heavy-duty steel lock pin holds the drop lid firmly secure. Auto-unlocks via banking-grade encrypted Bluetooth as you approach with your mobile phone, keeping mail safe from porch pirates.</p>
+                    </div>
+                </div>
+
+                <!-- Step 5: Mount Bracket -->
+                <div class="reveal-step" data-step="bracket">
+                    <div class="step-card glass-panel">
+                        <span class="eyebrow">05 / STRUCTURE</span>
+                        <h2>Reinforced Mounting</h2>
+                        <p>Machined from aerospace-grade structural aluminum. The universal mount supports standard driveway mailbox posts and clean, flush brick-wall installations.</p>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- Features Section -->
-        <section id="features" class="features-section">
-            <h2 class="section-title">Beyond a Box.</h2>
-            <div class="feature-grid">
-                <div class="feature-card glass-panel">
-                    <i class="fa-solid fa-bell icon-highlight"></i>
-                    <h3>Real-time Alerts</h3>
-                    <p>Instant mobile notifications the second mail is dropped.</p>
-                </div>
-                <div class="feature-card glass-panel">
-                    <i class="fa-solid fa-camera icon-highlight"></i>
-                    <h3>Motion Camera</h3>
-                    <p>Built-in HD camera capturing all activity near your post.</p>
-                </div>
-                <div class="feature-card glass-panel">
-                    <i class="fa-solid fa-sun icon-highlight"></i>
-                    <h3>Solar Powered</h3>
-                    <p>Self-sustaining operation. Zero wiring required.</p>
-                </div>
-                <div class="feature-card glass-panel">
-                    <i class="fa-solid fa-lock icon-highlight"></i>
-                    <h3>Smart Lock</h3>
-                    <p>Anti-theft locking system secured with banking-grade encryption.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- How It Works Section -->
-        <section id="how-it-works" class="how-it-works-section">
-            <h2 class="section-title">Seamless Experience.</h2>
-            <div class="steps-container">
-                <div class="step glass-panel">
-                    <div class="step-num">01</div>
-                    <div class="step-content">
-                        <h4>Mail Arrives</h4>
-                        <p>Courier deposits packages safely into the secure drop bay.</p>
-                    </div>
-                </div>
-                <div class="step glass-panel">
-                    <div class="step-num">02</div>
-                    <div class="step-content">
-                        <h4>Sensors Activate</h4>
-                        <p>Weight and motion sensors trigger the internal logic.</p>
-                    </div>
-                </div>
-                <div class="step glass-panel">
-                    <div class="step-num">03</div>
-                    <div class="step-content">
-                        <h4>Instant Ping</h4>
-                        <p>Your mobile app receives a push notification and live preview.</p>
-                    </div>
-                </div>
-                <div class="step glass-panel">
-                    <div class="step-num">04</div>
-                    <div class="step-content">
-                        <h4>Secure Access</h4>
-                        <p>Unlock your Inco mailbox via Bluetooth right from your phone.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Tech Section -->
-        <section id="tech" class="tech-section">
-            <div class="tech-content">
-                <h2 class="section-title">Under the Hood.</h2>
-                <div class="tech-specs">
-                    <div class="spec-row">
-                        <span class="spec-label">Connectivity</span>
-                        <span class="spec-val">WiFi 6 & Bluetooth 5.2</span>
-                    </div>
-                    <div class="spec-row">
-                        <span class="spec-label">AI Processing</span>
-                        <span class="spec-val">Edge Detection Neural Core</span>
-                    </div>
-                    <div class="spec-row">
-                        <span class="spec-label">Power</span>
-                        <span class="spec-val">Li-ion 10,000mAh + 15W Solar</span>
-                    </div>
-                    <div class="spec-row">
-                        <span class="spec-label">Durability</span>
-                        <span class="spec-val">IP67 Weather-resistant</span>
-                    </div>
-                </div>
-            </div>
-            <div class="tech-visuals">
-                <div class="mock-phone glass-panel">
-                    <div class="phone-screen">
-                        <div class="app-header">Inco App</div>
-                        <div class="app-status">
-                            <i class="fa-solid fa-shield-check" style="color:#00d2ff; font-size: 2rem;"></i>
-                            <p>System Armed</p>
+        <!-- Feature Section: Solar Power -->
+        <section id="features" class="solar-section">
+            <div class="split-layout">
+                <div class="split-info">
+                    <span class="tech-spec-tag"><i class="fa-solid fa-sun"></i> 100% Grid Independent</span>
+                    <h2 class="section-title">Unlimited Power.<br><span class="highlight">Zero Cables.</span></h2>
+                    <p class="subheadline" style="margin-bottom: 24px;">The Inco Smart Mailbox features a weather-sealed monocrystalline solar strip that channels energy continuously to a high-capacity Li-ion core. Even under thick winter cloud cover, the power reserve lasts up to 6 months without direct sun.</p>
+                    <div class="security-list" style="margin-top: 0;">
+                        <div class="security-item">
+                            <div class="security-icon"><i class="fa-solid fa-battery-three-quarters"></i></div>
+                            <div class="security-details">
+                                <h4>10,000mAh Battery Core</h4>
+                                <p>Industrial-grade energy cell stores power for half a year of zero-light performance.</p>
+                            </div>
                         </div>
-                        <div class="app-log">
-                            <div class="log-item">Package Delivered - 2:40 PM</div>
-                            <div class="log-item">Motion Detected - 10:15 AM</div>
-                        </div>
-                        <button class="app-btn">Unlock Mailbox</button>
+                    </div>
+                </div>
+                <div class="split-visual">
+                    <div class="glow-panel-wrapper">
+                        <img src="resources/solar_panel_detail.png" alt="Solar Panel Detail Close-up" class="visual-image">
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Gallery / Footer -->
-        <footer id="gallery" class="footer-section">
-            <div class="footer-content">
-                <h2>Ready for the future of delivery?</h2>
-                <p>Reserve your Inco Smart Mailbox today.</p>
-                <div class="footer-links">
-                    <a href="#">Privacy</a>
-                    <a href="#">Terms</a>
-                    <a href="#">Support</a>
+        <!-- Feature Section: Smart Notifications (Interactive Mobile Device Mockup) -->
+        <section class="notifications-section">
+            <div class="split-layout">
+                <div class="split-visual">
+                    <div class="phone-mockup-wrapper">
+                        <div class="phone-glow"></div>
+                        <div class="phone-device">
+                            <div class="phone-notch"></div>
+                            <div class="phone-screen">
+                                <div class="phone-header">
+                                    <span>9:41 AM</span>
+                                    <span><i class="fa-solid fa-wifi"></i> <i class="fa-solid fa-battery-full"></i></span>
+                                </div>
+                                <div class="phone-content">
+                                    <div id="notif-1" class="notification-banner">
+                                        <div class="notif-header">
+                                            <i class="fa-solid fa-circle-dot"></i> <span>INCO SMART</span>
+                                            <span class="notif-time">now</span>
+                                        </div>
+                                        <div class="notif-title">Delivery Detected!</div>
+                                        <div class="notif-body">A parcel was securely deposited in your mailbox. Lock engaged.</div>
+                                    </div>
+                                    <div class="app-main-ui">
+                                        <div class="app-lock-circle">
+                                            <i class="fa-solid fa-lock"></i>
+                                        </div>
+                                        <div class="app-btn-panel">
+                                            Unlock Lid via App
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="phone-header" style="justify-content: center; margin-bottom: 4px;">
+                                    <span style="width: 80px; height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px;"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="socials">
-                    <i class="fa-brands fa-twitter"></i>
-                    <i class="fa-brands fa-instagram"></i>
-                    <i class="fa-brands fa-github"></i>
+                <div class="split-info">
+                    <span class="tech-spec-tag"><i class="fa-solid fa-bell"></i> Instant Alerts</span>
+                    <h2 class="section-title">Know the Moment<br><span class="highlight">It Arrives.</span></h2>
+                    <p class="subheadline">Receive instant push notifications the exact second a package or letter is dropped inside. Our weight and optical sensors distinguish between junk flyers and parcels, ensuring you only get notified when it matters.</p>
+                    <div class="security-list">
+                        <div class="security-item">
+                            <div class="security-icon"><i class="fa-solid fa-signal"></i></div>
+                            <div class="security-details">
+                                <h4>Dual-Band Connectivity</h4>
+                                <p>Uses WiFi 6 for long-range home network sync and Bluetooth 5.2 for proximity unlock.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <p class="copyright">© 2026 Inco IoT Systems. All rights reserved.</p>
+            </div>
+        </section>
+
+        <!-- Feature Section: Security -->
+        <section class="security-section">
+            <div class="split-layout">
+                <div class="split-info">
+                    <span class="tech-spec-tag"><i class="fa-solid fa-shield-halved"></i> Bank-Grade Security</span>
+                    <h2 class="section-title">Fortified Against<br><span class="highlight">Tampering.</span></h2>
+                    <p class="subheadline">Designed like a vault. A heavy-duty physical locking pin prevents pry attacks, and built-in accelerometers sense movement or forced vibration, instantly triggering a loud alarm and pinging your phone with high-priority warnings.</p>
+                    
+                    <div class="security-list">
+                        <div class="security-item">
+                            <div class="security-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                            <div class="security-details">
+                                <h4>Tamper Alarm</h4>
+                                <p>Senses impacts, shaking, or unauthorized entry attempts and alerts you instantly.</p>
+                            </div>
+                        </div>
+                        <div class="security-item">
+                            <div class="security-icon"><i class="fa-solid fa-cloud-sun"></i></div>
+                            <div class="security-details">
+                                <h4>IP67 Weatherproofing</h4>
+                                <p>Completely sealed against dust, heavy rain, and extreme sub-zero temperatures.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="split-visual">
+                    <div class="glow-panel-wrapper">
+                        <img src="resources/security_lock.png" alt="Futuristic Lock Render" class="visual-image">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Use Cases / Audience Section -->
+        <section id="audience" class="audience-section">
+            <div class="audience-header">
+                <div>
+                    <span class="eyebrow">Tailored For Everyone</span>
+                    <h2 class="section-title" style="margin-bottom: 0;">Designed for Modern<br><span class="highlight">Living.</span></h2>
+                </div>
+                <div class="carousel-nav-btns">
+                    <button class="carousel-btn" id="carousel-left" aria-label="Scroll Left"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button class="carousel-btn" id="carousel-right" aria-label="Scroll Right"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+            </div>
+            
+            <div class="carousel-wrapper">
+                <div class="carousel-track">
+                    <!-- Card 1: Homeowners -->
+                    <div class="audience-card">
+                        <img src="resources/usecase_homeowners.png" alt="Modern Home Entrance" class="audience-card-bg">
+                        <div class="card-content">
+                            <h3>Homeowners</h3>
+                            <p>Protect your online purchases from porch piracy and keep track of mail while traveling.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Card 2: Property Managers -->
+                    <div class="audience-card">
+                        <img src="resources/usecase_property.png" alt="Modern Apartment Building Lobby" class="audience-card-bg">
+                        <div class="card-content">
+                            <h3>Property Managers</h3>
+                            <p>Integrate clean smart delivery nodes for residential units and simplify building logistics.</p>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Small Businesses -->
+                    <div class="audience-card">
+                        <img src="resources/usecase_business.png" alt="Boutique Shop Facade" class="audience-card-bg">
+                        <div class="card-content">
+                            <h3>Small Businesses</h3>
+                            <p>Never miss a secure document or client delivery after business hours have closed.</p>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Rural Deliveries -->
+                    <div class="audience-card">
+                        <img src="resources/usecase_rural.png" alt="Gravel Road Country House" class="audience-card-bg">
+                        <div class="card-content">
+                            <h3>Rural Deliveries</h3>
+                            <p>Avoid driving all the way down long driveways to check if the postman has visited.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats / Social Proof Band -->
+        <section class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-num">99.9%</div>
+                    <div class="stat-label">Notification Reliability</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-num">100%</div>
+                    <div class="stat-label">Grid-Independent Solar Core</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-num">0</div>
+                    <div class="stat-label">Cables or Wiring Required</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section class="testimonials-section">
+            <span class="eyebrow" style="text-align: center;">Verified Customer Reviews</span>
+            <h2 class="section-title" style="text-align: center; margin-bottom: 50px;">What Inco Users<br><span class="highlight">Are Saying.</span></h2>
+            
+            <div class="testimonials-grid">
+                <div class="testimonial-card glass-panel">
+                    <div class="stars-row">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"Before Inco, we had three packages stolen off our porch. Now, courier drivers scan the barcode on the OLED screen, deposit the box, and it locks immediately. Outstanding!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-info">
+                            <h4>Marcus Vance</h4>
+                            <p>Homeowner, Portland</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card glass-panel">
+                    <div class="stars-row">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"Our driveway is half a mile long. Knowing exactly when mail arrives has saved me dozens of cold walks. The solar panel keeps it running perfectly through the winter."</p>
+                    <div class="testimonial-author">
+                        <div class="author-info">
+                            <h4>Sarah Jenkins</h4>
+                            <p>Rural Homeowner, Vermont</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card glass-panel">
+                    <div class="stars-row">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"We manage 12 high-end duplexes. Installing Inco smart mailboxes has made package deliveries extremely secure and raised the tech profile of our rentals."</p>
+                    <div class="testimonial-author">
+                        <div class="author-info">
+                            <h4>Ray Chen</h4>
+                            <p>Property Manager, Austin</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section id="faq" class="faq-section">
+            <span class="eyebrow" style="text-align: center;">Got Questions?</span>
+            <h2 class="section-title" style="text-align: center; margin-bottom: 40px;">Frequently Asked<br><span class="highlight">Questions.</span></h2>
+            
+            <div class="faq-list">
+                <!-- Q1 -->
+                <div class="faq-item">
+                    <button class="faq-trigger">
+                        <span>How do delivery drivers open the mailbox?</span>
+                        <div class="faq-icon-box"><i class="fa-solid fa-chevron-down"></i></div>
+                    </button>
+                    <div class="faq-content">
+                        <p>The mailbox is unlocked by default when empty. Once a package is deposited, the lid locks automatically. If a courier has a second delivery, they can scan your unique mailbox barcode on the side OLED screen using their hand scanner, which securely verifies the delivery and triggers a temporary open command.</p>
+                    </div>
+                </div>
+                <!-- Q2 -->
+                <div class="faq-item">
+                    <button class="faq-trigger">
+                        <span>Will the solar panel work in cold, cloudy areas?</span>
+                        <div class="faq-icon-box"><i class="fa-solid fa-chevron-down"></i></div>
+                    </button>
+                    <div class="faq-content">
+                        <p>Yes. The high-efficiency monocrystalline solar panel is optimized for diffuse light, generating charge even on cloudy winter days. Under total darkness, the internal 10,000mAh battery can power the mailbox for up to 6 months.</p>
+                    </div>
+                </div>
+                <!-- Q3 -->
+                <div class="faq-item">
+                    <button class="faq-trigger">
+                        <span>Can it handle large boxes and letters?</span>
+                        <div class="faq-icon-box"><i class="fa-solid fa-chevron-down"></i></div>
+                    </button>
+                    <div class="faq-content">
+                        <p>Inco holds standard envelopes, folders, and medium-sized boxes (up to 12" x 8" x 6"). Large boxes will require delivery to a porch, but courier scans will still activate Inco's proximity camera to capture the drop-off.</p>
+                    </div>
+                </div>
+                <!-- Q4 -->
+                <div class="faq-item">
+                    <button class="faq-trigger">
+                        <span>How does the mobile app unlock it?</span>
+                        <div class="faq-icon-box"><i class="fa-solid fa-chevron-down"></i></div>
+                    </button>
+                    <div class="faq-content">
+                        <p>When you approach your mailbox with your phone, the companion app performs a secure, encrypted Bluetooth handshake, unlocking the mailbox automatically. You can also unlock it manually via Wi-Fi from inside your house.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final CTA / Download Band -->
+        <section class="final-cta-section">
+            <div class="cta-box">
+                <span class="eyebrow">Ready for the Next Generation?</span>
+                <h2>Reserve Your Inco Mailbox Today.</h2>
+                <p>Enjoy absolute peace of mind with modern delivery security. Orders ship within 4-6 weeks.</p>
+                <div class="app-badges">
+                    <a href="#" class="badge-btn">
+                        <i class="fa-brands fa-apple"></i>
+                        <div class="badge-text">
+                            <span>Download on the</span>
+                            <strong>App Store</strong>
+                        </div>
+                    </a>
+                    <a href="#" class="badge-btn">
+                        <i class="fa-brands fa-google-play"></i>
+                        <div class="badge-text">
+                            <span>Get it on</span>
+                            <strong>Google Play</strong>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer-section">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h3>Inco <span style="color:var(--accent);">.</span></h3>
+                    <p>Building secure, solar-powered IoT systems for modern residential and business package deliveries.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="#reveal">3D Explorer</a></li>
+                        <li><a href="#features">Solar Energy</a></li>
+                        <li><a href="#features">Notifications</a></li>
+                        <li><a href="#hero">Pricing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Press Kit</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#faq">Help Center</a></li>
+                        <li><a href="#">Developer API</a></li>
+                        <li><a href="#">System Status</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>© 2026 Inco IoT Systems. All rights reserved.</p>
+                <div class="footer-socials">
+                    <a href="#" class="social-link" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#" class="social-link" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="social-link" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="#" class="social-link" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+                </div>
             </div>
         </footer>
 
