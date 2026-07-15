@@ -14,7 +14,7 @@ window.addEventListener('DOMContentLoaded', () => {
     setupDockAnimation();
     setupThemeToggle();
     setupFAQAccordion();
-    setupCarousel();
+    setupOrderModal();
 });
 
 // 1. Lenis Smooth Scroll Integration
@@ -52,11 +52,11 @@ function initThreeJSMailbox() {
 
     // 3D Anchor Vectors for HTML Label Projection
     const anchors = {
-        solar: new THREE.Vector3(0, 1.12, 0),
-        led: new THREE.Vector3(0, 0.5, 0.63),
-        display: new THREE.Vector3(1.11, 0.1, 0.2),
-        lock: new THREE.Vector3(-0.7, 0.1, 0.63),
-        bracket: new THREE.Vector3(0, -0.52, 0)
+        solar: new THREE.Vector3(0, 0.5, 0.2),
+        led: new THREE.Vector3(0, 0.74, 0.23),
+        display: new THREE.Vector3(0.32, -0.5, 0.2),
+        lock: new THREE.Vector3(-0.35, -0.5, 0.21),
+        bracket: new THREE.Vector3(0.48, 0, -0.22)
     };
 
     function initScene() {
@@ -64,7 +64,7 @@ function initThreeJSMailbox() {
 
         // Camera: set field of view, aspect ratio, clipping planes
         camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
-        camera.position.set(0, 0.2, 5.5);
+        camera.position.set(0, 0.2, 6.0);
 
         // Renderer
         renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
@@ -92,11 +92,11 @@ function initThreeJSMailbox() {
         scene.environment = envTexture;
 
         // Lighting System
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.45);
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.28);
         scene.add(ambientLight);
 
         // Main key light from upper-front-right
-        const dirLight = new THREE.DirectionalLight(0xffffff, 1.6);
+        const dirLight = new THREE.DirectionalLight(0xffffff, 1.1);
         dirLight.position.set(5, 5, 5);
         dirLight.castShadow = true;
         dirLight.shadow.mapSize.width = 1024;
@@ -117,7 +117,7 @@ function initThreeJSMailbox() {
 
         // Blue PointLight (casts glowing blue LED on front mailbox shell)
         ledPointLight = new THREE.PointLight(0x2DB2FF, 2.0, 4);
-        ledPointLight.position.set(0, 0.5, 0.85);
+        ledPointLight.position.set(0, 0.7, 0.4);
         scene.add(ledPointLight);
 
         // Dynamic Textures
@@ -126,9 +126,9 @@ function initThreeJSMailbox() {
 
         // Materials (Anthracite / charcoal metal with balanced lighting parameters)
         const bodyMat = new THREE.MeshStandardMaterial({
-            color: 0x2d2f34, // Dark charcoal steel rather than pure black
-            metalness: 0.65, // Balanced metallic sheen
-            roughness: 0.38, // Moderate roughness to distribute specular reflections
+            color: 0x5a7fa3, // Matte slate blue
+            metalness: 0.2, // Powder-coated steel finish
+            roughness: 0.55,
             name: "bodyMat"
         });
 
@@ -173,112 +173,89 @@ function initThreeJSMailbox() {
         // 3D Mailbox Model Hierarchy Setup
         mailboxGroup = new THREE.Group();
         mailboxGroup.position.set(1.35, -0.25, 0);
-        mailboxGroup.scale.set(1.25, 1.25, 1.25);
+        mailboxGroup.scale.set(1.45, 1.45, 1.45);
         mailboxGroup.rotation.set(0.2, -0.4, 0);
         scene.add(mailboxGroup);
 
-        // 2A. Middle Body
-        const middleBodyGroup = new THREE.Group();
-        mailboxGroup.add(middleBodyGroup);
+        // 2A. Main Body
+        const mainBody = new THREE.Mesh(new THREE.BoxGeometry(1.0, 1.5, 0.4), bodyMat);
+        mainBody.castShadow = true;
+        mainBody.receiveShadow = true;
+        mailboxGroup.add(mainBody);
 
-        const midBox = new THREE.Mesh(new THREE.BoxGeometry(2.0, 1.0, 1.2), bodyMat);
-        midBox.castShadow = true;
-        midBox.receiveShadow = true;
-        middleBodyGroup.add(midBox);
+        // 2B. Angled Top Lid
+        const lidGroup = new THREE.Group();
+        lidGroup.position.set(0, 0.75, 0.03); // Top edge, slightly forward
+        lidGroup.rotation.x = 0.08; // Slight angle forward
+        mailboxGroup.add(lidGroup);
 
-        const midCyl = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 2.0, 32, 1, false, 0, Math.PI), bodyMat);
-        midCyl.rotation.z = -Math.PI / 2;
-        midCyl.position.y = 0.5;
-        midCyl.castShadow = true;
-        midCyl.receiveShadow = true;
-        middleBodyGroup.add(midCyl);
+        const lid = new THREE.Mesh(new THREE.BoxGeometry(1.04, 0.06, 0.5), bodyMat);
+        lid.position.set(0, 0.03, 0); 
+        lid.castShadow = true;
+        lid.receiveShadow = true;
+        lidGroup.add(lid);
 
-        // 2B. Left End Cap
-        const leftCapGroup = new THREE.Group();
-        leftCapGroup.position.x = -1.05;
-        mailboxGroup.add(leftCapGroup);
+        // 2C. Back Mounting Bracket (Wall mount flange)
+        const mountBracket = new THREE.Mesh(new THREE.BoxGeometry(0.08, 1.0, 0.08), bracketMat);
+        mountBracket.position.set(0.48, 0, -0.22);
+        mountBracket.castShadow = true;
+        mailboxGroup.add(mountBracket);
 
-        const leftBox = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1.04, 1.24), capMat);
-        leftBox.castShadow = true;
-        leftBox.receiveShadow = true;
-        leftCapGroup.add(leftBox);
+        const mountFlange1 = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.1, 0.02), bracketMat);
+        mountFlange1.position.set(0.48, 0.4, -0.25);
+        mailboxGroup.add(mountFlange1);
+        
+        const mountFlange2 = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.1, 0.02), bracketMat);
+        mountFlange2.position.set(0.48, -0.4, -0.25);
+        mailboxGroup.add(mountFlange2);
 
-        const leftCyl = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.62, 0.1, 32, 1, false, 0, Math.PI), capMat);
-        leftCyl.rotation.z = -Math.PI / 2;
-        leftCyl.position.y = 0.52;
-        leftCyl.castShadow = true;
-        leftCyl.receiveShadow = true;
-        leftCapGroup.add(leftCyl);
+        // 2D. Recessed Solar Panel (Mail Slot shape)
+        const slotRecess = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.08, 0.04), bracketMat);
+        slotRecess.position.set(0, 0.5, 0.19);
+        mailboxGroup.add(slotRecess);
 
-        // 2C. Right End Cap
-        const rightCapGroup = new THREE.Group();
-        rightCapGroup.position.x = 1.05;
-        mailboxGroup.add(rightCapGroup);
+        const solarPanel = new THREE.Mesh(new THREE.BoxGeometry(0.68, 0.06, 0.02), solarMat);
+        solarPanel.position.set(0, 0.5, 0.20);
+        mailboxGroup.add(solarPanel);
 
-        const rightBox = new THREE.Mesh(new THREE.BoxGeometry(0.1, 1.04, 1.24), capMat);
-        rightBox.castShadow = true;
-        rightBox.receiveShadow = true;
-        rightCapGroup.add(rightBox);
-
-        const rightCyl = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.62, 0.1, 32, 1, false, 0, Math.PI), capMat);
-        rightCyl.rotation.z = -Math.PI / 2;
-        rightCyl.position.y = 0.52;
-        rightCyl.castShadow = true;
-        rightCyl.receiveShadow = true;
-        rightCapGroup.add(rightCyl);
-
-        // 2D. Solar Panel Strip
-        const solarPanel = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.02, 0.8), solarMat);
-        solarPanel.position.set(0, 1.11, 0);
-        middleBodyGroup.add(solarPanel);
-
-        // 2E. Electric LED Light Bar
-        ledMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 2.2, 16), ledMat);
+        // 2E. Electric LED Light Bar (Under lid seam)
+        ledMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.01, 0.01, 1.0, 16), ledMat);
         ledMesh.rotation.z = -Math.PI / 2;
-        ledMesh.position.set(0, 0.5, 0.62);
+        ledMesh.position.set(0, 0.74, 0.22);
         mailboxGroup.add(ledMesh);
 
         // 2F. OLED Screen Display
-        const oledScreen = new THREE.Mesh(new THREE.BoxGeometry(0.01, 0.25, 0.45), oledTexture);
-        oledScreen.position.set(1.11, 0.1, 0.2);
+        const oledScreen = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.1, 0.01), oledTexture);
+        oledScreen.position.set(0.32, -0.5, 0.2);
         mailboxGroup.add(oledScreen);
 
-        // OLED Frame
-        const oledFrame = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.29, 0.49), bracketMat);
-        oledFrame.position.set(1.105, 0.1, 0.2);
+        const oledFrame = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.12, 0.015), bracketMat);
+        oledFrame.position.set(0.32, -0.5, 0.195);
         mailboxGroup.add(oledFrame);
 
-        // 2G. Physical Lock & Camera Eye
-        const lockBezel = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.02, 24), chromeMat);
+        // 2G. Physical Lock
+        const lockBezel = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.02, 24), chromeMat);
         lockBezel.rotation.x = Math.PI / 2;
-        lockBezel.position.set(-0.7, 0.1, 0.62);
+        lockBezel.position.set(-0.35, -0.5, 0.2);
         lockBezel.castShadow = true;
         mailboxGroup.add(lockBezel);
 
-        const lockCore = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.022, 24), darkGlassMat);
+        const lockCore = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.022, 24), darkGlassMat);
         lockCore.rotation.x = Math.PI / 2;
-        lockCore.position.set(-0.7, 0.1, 0.621);
+        lockCore.position.set(-0.35, -0.5, 0.201);
         mailboxGroup.add(lockCore);
 
-        // 2H. Bottom Mount Post & Flange
-        const mountPost = new THREE.Mesh(new THREE.BoxGeometry(0.15, 1.5, 0.15), bracketMat);
-        mountPost.position.set(0, -1.3, 0);
-        mountPost.castShadow = true;
-        mailboxGroup.add(mountPost);
-
-        const mountFlange = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.05, 0.4), bracketMat);
-        mountFlange.position.set(0, -0.52, 0);
-        mountFlange.castShadow = true;
-        mailboxGroup.add(mountFlange);
-
-        // 2I. Flag/Lever mechanism (aesthetic right side detail)
-        const flagBase = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.25, 0.08), bracketMat);
-        flagBase.position.set(1.11, 0.7, -0.3);
-        mailboxGroup.add(flagBase);
-
-        const flagArm = new THREE.Mesh(new THREE.BoxGeometry(0.015, 0.35, 0.03), chromeMat);
-        flagArm.position.set(1.125, 0.8, -0.3);
-        mailboxGroup.add(flagArm);
+        // 2H. Brand Wordmark (INCO)
+        const wordmarkTexture = createWordmarkTexture();
+        const wordmarkMat = new THREE.MeshStandardMaterial({
+            map: wordmarkTexture,
+            transparent: true,
+            roughness: 0.6,
+            metalness: 0.1
+        });
+        const wordmarkPlane = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.05), wordmarkMat);
+        wordmarkPlane.position.set(0.35, -0.65, 0.201);
+        mailboxGroup.add(wordmarkPlane);
 
         // Setup GSAP Scroll animations
         setupGSAPScroll();
@@ -341,6 +318,28 @@ function initThreeJSMailbox() {
             emissive: 0x2db2ff,
             emissiveIntensity: 1.8
         });
+    }
+
+    // Dynamic Wordmark texture creation
+    function createWordmarkTexture() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 256;
+        canvas.height = 64;
+        const ctx = canvas.getContext('2d');
+        
+        ctx.clearRect(0, 0, 256, 64);
+        ctx.fillStyle = '#b0c4de'; // Light metal text color
+        ctx.font = 'bold 36px "Inter", "Segoe UI", sans-serif';
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'middle';
+        if (ctx.letterSpacing !== undefined) {
+            ctx.letterSpacing = '4px';
+        }
+        ctx.fillText('INCO', 240, 32);
+        
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.minFilter = THREE.LinearFilter;
+        return texture;
     }
 
     // Function to draw text on OLED Canvas dynamically
@@ -451,29 +450,29 @@ function initThreeJSMailbox() {
 
         // Transition from Hero (right) to Reveal Section Step 1 (Solar Panel focus on the left)
         revealTL.to(mailboxGroup.position, { x: -1.2, y: -0.4, z: 0.1, duration: 1.5 })
-                .to(mailboxGroup.scale, { x: 0.95, y: 0.95, z: 0.95, duration: 1.5 }, 0)
+                .to(mailboxGroup.scale, { x: 1.1, y: 1.1, z: 1.1, duration: 1.5 }, 0)
                 .to(mailboxGroup.rotation, { x: 0.8, y: 0.45, z: 0, duration: 1.5 }, 0)
-                .to(camera.position, { z: 5.0, duration: 1.5 }, 0);
+                .to(camera.position, { z: 5.5, duration: 1.5 }, 0);
 
         // Step 1 to Step 2 (Front LED accent focus on the left)
         revealTL.to(mailboxGroup.rotation, { x: 0.05, y: 0.15, z: 0, duration: 1.5 })
                 .to(mailboxGroup.position, { x: -1.2, y: 0, z: 0.1, duration: 1.5 }, "<")
-                .to(camera.position, { z: 5.2, duration: 1.5 }, "<");
+                .to(camera.position, { z: 5.7, duration: 1.5 }, "<");
 
         // Step 2 to Step 3 (Right OLED Display focus on the left)
         revealTL.to(mailboxGroup.rotation, { x: 0.1, y: 1.6, z: 0, duration: 1.5 })
                 .to(mailboxGroup.position, { x: -1.05, y: -0.1, z: 0.4, duration: 1.5 }, "<")
-                .to(camera.position, { z: 4.8, duration: 1.5 }, "<");
+                .to(camera.position, { z: 5.3, duration: 1.5 }, "<");
 
         // Step 3 to Step 4 (Front-Left Security Lock focus on the left)
         revealTL.to(mailboxGroup.rotation, { x: 0.05, y: -0.55, z: 0, duration: 1.5 })
                 .to(mailboxGroup.position, { x: -1.2, y: 0, z: 0.1, duration: 1.5 }, "<")
-                .to(camera.position, { z: 5.0, duration: 1.5 }, "<");
+                .to(camera.position, { z: 5.5, duration: 1.5 }, "<");
 
         // Step 4 to Step 5 (Bottom Mount Flange / Bracket focus on the left)
         revealTL.to(mailboxGroup.rotation, { x: -0.25, y: 3.14, z: 0, duration: 1.5 })
                 .to(mailboxGroup.position, { x: -1.2, y: 0.5, z: 0, duration: 1.5 }, "<")
-                .to(camera.position, { z: 5.2, duration: 1.5 }, "<");
+                .to(camera.position, { z: 5.7, duration: 1.5 }, "<");
 
         // --- SUBSEQUENT SECTIONS POSITION MAPS ---
         
@@ -486,8 +485,8 @@ function initThreeJSMailbox() {
                 activeStep = null;
                 gsap.to(mailboxGroup.position, { x: 1.25, y: -0.38, z: 0, duration: 1.2, overwrite: 'auto' });
                 gsap.to(mailboxGroup.rotation, { x: 0.75, y: 0.35, z: 0, duration: 1.2, overwrite: 'auto' });
-                gsap.to(mailboxGroup.scale, { x: 0.95, y: 0.95, z: 0.95, duration: 1.2, overwrite: 'auto' });
-                gsap.to(camera.position, { z: 5.0, duration: 1.2, overwrite: 'auto' });
+                gsap.to(mailboxGroup.scale, { x: 1.1, y: 1.1, z: 1.1, duration: 1.2, overwrite: 'auto' });
+                gsap.to(camera.position, { z: 5.5, duration: 1.2, overwrite: 'auto' });
                 updateOledCanvasText("SOLAR STRENGTH", "GRID STATUS: 100%", "SOLAR: ACTIVE");
             }
         });
@@ -502,8 +501,8 @@ function initThreeJSMailbox() {
                 // Move mailbox left, next to the phone mockup
                 gsap.to(mailboxGroup.position, { x: -0.45, y: -0.15, z: 0.1, duration: 1.2, overwrite: 'auto' });
                 gsap.to(mailboxGroup.rotation, { x: 0.05, y: 0.25, z: 0, duration: 1.2, overwrite: 'auto' });
-                gsap.to(mailboxGroup.scale, { x: 0.95, y: 0.95, z: 0.95, duration: 1.2, overwrite: 'auto' });
-                gsap.to(camera.position, { z: 5.2, duration: 1.2, overwrite: 'auto' });
+                gsap.to(mailboxGroup.scale, { x: 1.1, y: 1.1, z: 1.1, duration: 1.2, overwrite: 'auto' });
+                gsap.to(camera.position, { z: 5.7, duration: 1.2, overwrite: 'auto' });
                 updateOledCanvasText("LED PULSE TEST", "STATUS: BLUE", "MAIL DETECTED");
 
                 // Pulse LED and light brightness
@@ -529,26 +528,13 @@ function initThreeJSMailbox() {
                 // Zoom in on lock (left-front angle)
                 gsap.to(mailboxGroup.position, { x: 1.15, y: 0, z: 0.5, duration: 1.2, overwrite: 'auto' });
                 gsap.to(mailboxGroup.rotation, { x: 0.0, y: -0.45, z: 0, duration: 1.2, overwrite: 'auto' });
-                gsap.to(mailboxGroup.scale, { x: 1.05, y: 1.05, z: 1.05, duration: 1.2, overwrite: 'auto' });
-                gsap.to(camera.position, { z: 4.8, duration: 1.2, overwrite: 'auto' });
+                gsap.to(mailboxGroup.scale, { x: 1.2, y: 1.2, z: 1.2, duration: 1.2, overwrite: 'auto' });
+                gsap.to(camera.position, { z: 5.3, duration: 1.2, overwrite: 'auto' });
                 updateOledCanvasText("LID SECURITY", "LOCK CORE: ENGAGED", "TAMPER SENSOR: ON");
             }
         });
 
-        // Carousel Section (Shift to center background and scale down)
-        ScrollTrigger.create({
-            trigger: '#audience',
-            start: 'top 80%',
-            end: 'bottom 20%',
-            onEnter: () => {
-                activeStep = null;
-                gsap.to(mailboxGroup.position, { x: 0, y: -0.6, z: -1.0, duration: 1.5, overwrite: 'auto' });
-                gsap.to(mailboxGroup.rotation, { x: 0.15, y: -0.5, z: 0, duration: 1.5, overwrite: 'auto' });
-                gsap.to(mailboxGroup.scale, { x: 0.85, y: 0.85, z: 0.85, duration: 1.5, overwrite: 'auto' });
-                gsap.to(camera.position, { z: 5.5, duration: 1.5, overwrite: 'auto' });
-                updateOledCanvasText("INCO ACTIVE", "CAROUSEL DOCK", "SYS: OPTIMIZED");
-            }
-        });
+
 
         // FAQ Section (Slow rotation on the left side)
         ScrollTrigger.create({
@@ -559,8 +545,8 @@ function initThreeJSMailbox() {
                 activeStep = null;
                 gsap.to(mailboxGroup.position, { x: -1.25, y: -0.2, z: -0.4, duration: 1.5, overwrite: 'auto' });
                 gsap.to(mailboxGroup.rotation, { x: 0.1, y: 0.5, z: 0, duration: 1.5, overwrite: 'auto' });
-                gsap.to(mailboxGroup.scale, { x: 0.9, y: 0.9, z: 0.9, duration: 1.5, overwrite: 'auto' });
-                gsap.to(camera.position, { z: 5.2, duration: 1.5, overwrite: 'auto' });
+                gsap.to(mailboxGroup.scale, { x: 1.05, y: 1.05, z: 1.05, duration: 1.5, overwrite: 'auto' });
+                gsap.to(camera.position, { z: 5.7, duration: 1.5, overwrite: 'auto' });
             }
         });
 
@@ -573,8 +559,8 @@ function initThreeJSMailbox() {
                 activeStep = null;
                 gsap.to(mailboxGroup.position, { x: 0, y: -0.4, z: -1.2, duration: 1.5, overwrite: 'auto' });
                 gsap.to(mailboxGroup.rotation, { x: 0.15, y: -0.3, z: 0, duration: 1.5, overwrite: 'auto' });
-                gsap.to(mailboxGroup.scale, { x: 1.0, y: 1.0, z: 1.0, duration: 1.5, overwrite: 'auto' });
-                gsap.to(camera.position, { z: 5.5, duration: 1.5, overwrite: 'auto' });
+                gsap.to(mailboxGroup.scale, { x: 1.15, y: 1.15, z: 1.15, duration: 1.5, overwrite: 'auto' });
+                gsap.to(camera.position, { z: 6.0, duration: 1.5, overwrite: 'auto' });
                 container.style.opacity = '0.35';
             },
             onLeaveBack: () => {
@@ -640,7 +626,7 @@ function initThreeJSMailbox() {
             mailboxGroup.rotation.x = 0.2 + Math.cos(time * 0.6) * 0.02;
             mailboxGroup.position.y = -0.25 + Math.sin(time * 1.2) * 0.025;
             mailboxGroup.position.x = 1.35;
-            mailboxGroup.scale.set(1.25, 1.25, 1.25);
+            mailboxGroup.scale.set(1.45, 1.45, 1.45);
         }
 
         // 2. Pulse emissive LED light bar strip and PointLight intensity
@@ -716,7 +702,7 @@ function setupDockAnimation() {
     });
 
     // Update active nav dot as user scrolls page
-    const sections = ['#hero', '#reveal', '#features', '#audience', '#faq'];
+    const sections = ['#hero', '#reveal', '#features', '#faq'];
     sections.forEach(selector => {
         const sec = document.querySelector(selector);
         if (!sec) return;
@@ -816,19 +802,76 @@ function setupFAQAccordion() {
     });
 }
 
-// 7. Audience Carousel Scrolling
-function setupCarousel() {
-    const track = document.querySelector('.carousel-track');
-    const leftBtn = document.getElementById('carousel-left');
-    const rightBtn = document.getElementById('carousel-right');
 
-    if (!track || !leftBtn || !rightBtn) return;
+// 8. Order Modal & Form Submission
+function setupOrderModal() {
+    const modal = document.getElementById('order-modal');
+    const openBtns = [document.getElementById('open-order-modal'), document.getElementById('open-order-modal-footer')];
+    const closeBtns = [document.getElementById('close-order-modal'), document.getElementById('close-success-btn')];
+    const form = document.getElementById('order-form');
+    const formContainer = document.getElementById('order-form-container');
+    const successContainer = document.getElementById('order-success');
+    const submitBtn = document.getElementById('submit-order-btn');
 
-    leftBtn.addEventListener('click', () => {
-        track.scrollBy({ left: -350, behavior: 'smooth' });
+    if (!modal || !form) return;
+
+    openBtns.forEach(btn => {
+        if (btn) {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                formContainer.style.display = 'block';
+                successContainer.style.display = 'none';
+            });
+        }
     });
 
-    rightBtn.addEventListener('click', () => {
-        track.scrollBy({ left: 350, behavior: 'smooth' });
+    closeBtns.forEach(btn => {
+        if(btn) {
+            btn.addEventListener('click', () => {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        }
+    });
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const originalBtnHTML = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Submitting...';
+        submitBtn.disabled = true;
+
+        const formData = new FormData(form);
+
+        try {
+            const res = await fetch("https://api.web3forms.com/submit", {
+                method: "POST",
+                body: formData,
+            });
+            const result = await res.json();
+
+            if (result.success) {
+                formContainer.style.display = 'none';
+                successContainer.style.display = 'block';
+                form.reset();
+            } else {
+                alert("Something went wrong. Please try again.");
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Network error. Please try again.");
+        } finally {
+            submitBtn.innerHTML = originalBtnHTML;
+            submitBtn.disabled = false;
+        }
     });
 }
