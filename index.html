@@ -90,10 +90,6 @@
                     <i class="fa-solid fa-layer-group"></i>
                     <span class="dock-label">Features</span>
                 </a>
-                <a href="#audience" class="dock-link">
-                    <i class="fa-solid fa-users"></i>
-                    <span class="dock-label">Use Cases</span>
-                </a>
                 <a href="#faq" class="dock-link">
                     <i class="fa-solid fa-circle-question"></i>
                     <span class="dock-label">FAQ</span>
@@ -112,8 +108,8 @@
                 <h1 class="headline">Mail, <span class="highlight">Reinvented.</span></h1>
                 <p class="subheadline">A solar-powered smart mailbox with real-time push alerts, encrypted Bluetooth access, and a sleek ambient LED status bar. Built for modern deliveries.</p>
                 <div class="cta-group">
-                    <a href="#reveal" class="btn btn-primary">Explore Features <i class="fa-solid fa-arrow-down"></i></a>
-                    <a href="#faq" class="btn btn-secondary">Get Support</a>
+                    <button class="btn btn-primary" id="open-order-modal">Order Now <i class="fa-solid fa-cart-shopping"></i></button>
+                    <a href="#reveal" class="btn btn-secondary">Explore Features <i class="fa-solid fa-arrow-down"></i></a>
                 </div>
             </div>
             
@@ -290,60 +286,6 @@
             </div>
         </section>
 
-        <!-- Use Cases / Audience Section -->
-        <section id="audience" class="audience-section">
-            <div class="audience-header">
-                <div>
-                    <span class="eyebrow">Tailored For Everyone</span>
-                    <h2 class="section-title" style="margin-bottom: 0;">Designed for Modern<br><span class="highlight">Living.</span></h2>
-                </div>
-                <div class="carousel-nav-btns">
-                    <button class="carousel-btn" id="carousel-left" aria-label="Scroll Left"><i class="fa-solid fa-chevron-left"></i></button>
-                    <button class="carousel-btn" id="carousel-right" aria-label="Scroll Right"><i class="fa-solid fa-chevron-right"></i></button>
-                </div>
-            </div>
-            
-            <div class="carousel-wrapper">
-                <div class="carousel-track">
-                    <!-- Card 1: Homeowners -->
-                    <div class="audience-card">
-                        <img src="resources/usecase_homeowners.png" alt="Modern Home Entrance" class="audience-card-bg">
-                        <div class="card-content">
-                            <h3>Homeowners</h3>
-                            <p>Protect your online purchases from porch piracy and keep track of mail while traveling.</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Card 2: Property Managers -->
-                    <div class="audience-card">
-                        <img src="resources/usecase_property.png" alt="Modern Apartment Building Lobby" class="audience-card-bg">
-                        <div class="card-content">
-                            <h3>Property Managers</h3>
-                            <p>Integrate clean smart delivery nodes for residential units and simplify building logistics.</p>
-                        </div>
-                    </div>
-
-                    <!-- Card 3: Small Businesses -->
-                    <div class="audience-card">
-                        <img src="resources/usecase_business.png" alt="Boutique Shop Facade" class="audience-card-bg">
-                        <div class="card-content">
-                            <h3>Small Businesses</h3>
-                            <p>Never miss a secure document or client delivery after business hours have closed.</p>
-                        </div>
-                    </div>
-
-                    <!-- Card 4: Rural Deliveries -->
-                    <div class="audience-card">
-                        <img src="resources/usecase_rural.png" alt="Gravel Road Country House" class="audience-card-bg">
-                        <div class="card-content">
-                            <h3>Rural Deliveries</h3>
-                            <p>Avoid driving all the way down long driveways to check if the postman has visited.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <!-- Stats / Social Proof Band -->
         <section class="stats-section">
             <div class="stats-grid">
@@ -464,7 +406,10 @@
                 <span class="eyebrow">Ready for the Next Generation?</span>
                 <h2>Reserve Your Inco Mailbox Today.</h2>
                 <p>Enjoy absolute peace of mind with modern delivery security. Orders ship within 4-6 weeks.</p>
-                <div class="app-badges">
+                <div class="cta-group" style="margin-top: 30px; justify-content: center; display: flex;">
+                    <button class="btn btn-primary" id="open-order-modal-footer">Order Now <i class="fa-solid fa-cart-shopping"></i></button>
+                </div>
+                <div class="app-badges" style="margin-top: 30px;">
                     <a href="#" class="badge-btn">
                         <i class="fa-brands fa-apple"></i>
                         <div class="badge-text">
@@ -531,6 +476,56 @@
         </footer>
 
     </main>
+
+    <!-- Order Modal -->
+    <div id="order-modal" class="modal-overlay">
+        <div class="modal-content glass-panel">
+            <button id="close-order-modal" class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+            <h2 class="section-title">Order Your <span class="highlight">Inco</span>.</h2>
+            <p class="subheadline" style="margin-bottom: 20px;">Complete the form below and we'll email you the shipping details.</p>
+            
+            <div id="order-form-container">
+                <form id="order-form" class="order-form">
+                    <input type="hidden" name="access_key" value="781b658c-0419-437e-b978-669c17064e63">
+                    <input type="hidden" name="subject" value="New Mailbox Order">
+                    <input type="hidden" name="from_name" value="Inco Orders">
+
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" name="name" required class="form-input" placeholder="Jane Doe">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" name="email" required class="form-input" placeholder="jane@example.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Shipping Address</label>
+                        <textarea name="address" required class="form-input" placeholder="123 Smart St, Techville" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quantity</label>
+                        <input type="number" name="quantity" min="1" value="1" required class="form-input">
+                    </div>
+
+                    <button type="submit" id="submit-order-btn" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                        <span class="btn-text">Place Order Request</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Success State -->
+            <div id="order-success" class="order-success" style="display: none; text-align: center; padding: 20px;">
+                <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
+                <h3>Order Received!</h3>
+                <p>Thanks — your order request has been received. We'll email you shipping details shortly.</p>
+                <button class="btn btn-secondary" id="close-success-btn" style="margin-top: 15px;">Close</button>
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
