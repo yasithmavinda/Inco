@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout — Smartdrop Unit</title>
+    <meta name="description" content="Securely order the Smartdrop Retrofit Unit.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="checkout-page">
+    <script>
+        // Apply theme immediately before content renders to prevent flashing
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
+
+    <header class="checkout-nav">
+        <a href="index.html" class="checkout-back-link">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Back to Home</span>
+        </a>
+    </header>
+
+    <main class="content-wrapper" style="width: 100%;">
+        <div class="checkout-container">
+            <!-- Product Preview Column -->
+            <div class="checkout-product-card">
+                <img src="resources/smartdrop_unit.png" alt="Smartdrop Unit" class="pricing-card-bg" style="filter: brightness(0.4) saturate(0.85);">
+                <div class="pricing-card-content" style="z-index: 3;">
+                    <span class="pricing-tag">Retrofit Kit</span>
+                    <h3 style="font-size: 2.2rem;">Smartdrop Retrofit Unit</h3>
+                    <div class="pricing-price" style="margin-bottom: 10px;">
+                        <span class="price-amount" style="font-size: 3rem;">4,600</span>
+                        <span class="price-currency">LKR</span>
+                    </div>
+                    <p class="pricing-desc" style="margin-bottom: 20px; font-size: 1rem;">
+                        Keep your existing mailbox. Purchase the intelligent core system to easily retrofit your mailbox with smart security and cellular connectivity.
+                    </p>
+                    <ul class="pricing-specs" style="margin-bottom: 0;">
+                        <li style="margin-bottom: 10px; font-size: 0.9rem;"><i class="fa-solid fa-circle-check"></i> High-efficiency solar charge controller</li>
+                        <li style="margin-bottom: 10px; font-size: 0.9rem;"><i class="fa-solid fa-circle-check"></i> Internal 10,000mAh battery module</li>
+                        <li style="margin-bottom: 10px; font-size: 0.9rem;"><i class="fa-solid fa-circle-check"></i> Core IoT motherboard & sensor array</li>
+                        <li style="margin-bottom: 10px; font-size: 0.9rem;"><i class="fa-solid fa-circle-check"></i> Multi-surface bracket mounting hardware</li>
+                        <li style="margin-bottom: 0; font-size: 0.9rem;"><i class="fa-solid fa-circle-check"></i> Instant Telegram alerts & app connectivity</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Form Column -->
+            <div class="checkout-form-panel glass-panel">
+                <div id="order-form-container">
+                    <h2 class="checkout-title">Order <span class="highlight">Smart Unit</span></h2>
+                    <p class="checkout-subtitle">Fill in the fields below to send your reservation request. We'll contact you with invoice details.</p>
+                    
+                    <form id="checkout-order-form" class="order-form">
+                        <input type="hidden" name="access_key" value="781b658c-0419-437e-b978-669c17064e63">
+                        <input type="hidden" name="subject" value="New Retrofit Unit Order - 4600 LKR">
+                        <input type="hidden" name="from_name" value="Smartdrop Order Desk">
+                        <input type="hidden" name="product" value="Smartdrop Retrofit Unit (Retrofit Kit)">
+                        <input type="hidden" name="price" value="4600 LKR">
+
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" name="name" required class="form-input" placeholder="Jane Doe">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" name="email" required class="form-input" placeholder="jane@example.com">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" name="phone" required class="form-input" placeholder="+94 77 123 4567">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Shipping Address</label>
+                            <textarea name="message" required class="form-input" placeholder="123 Smart St, Techville" rows="3"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Quantity</label>
+                            <input type="number" name="quantity" min="1" value="1" required class="form-input">
+                        </div>
+
+                        <button type="submit" id="submit-order-btn" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 10px;">
+                            <span class="btn-text" style="color: inherit;">Confirm Order Reservation</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Success State -->
+                <div id="order-success" class="order-success" style="display: none; text-align: center; padding: 20px 0;">
+                    <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
+                    <h3 class="checkout-title" style="margin-bottom: 12px;">Reservation Complete!</h3>
+                    <p class="checkout-subtitle" style="margin-bottom: 25px;">Thank you for reserving your Smartdrop Retrofit Unit. A team member will email you instructions to complete payment and shipping details.</p>
+                    <a href="index.html" class="btn btn-secondary" style="width: 100%; justify-content: center;">Return to Home</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Form Handling Logic
+        const form = document.getElementById('checkout-order-form');
+        const formContainer = document.getElementById('order-form-container');
+        const successContainer = document.getElementById('order-success');
+        const submitBtn = document.getElementById('submit-order-btn');
+
+        if (form) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const originalBtnHTML = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<span class="btn-text" style="color: inherit;"><i class="fa-solid fa-circle-notch fa-spin"></i> Processing...</span>';
+                submitBtn.disabled = true;
+
+                const formData = new FormData(form);
+
+                try {
+                    const res = await fetch("https://api.web3forms.com/submit", {
+                        method: "POST",
+                        body: formData,
+                    });
+                    const result = await res.json();
+
+                    if (result.success) {
+                        formContainer.style.display = 'none';
+                        successContainer.style.display = 'block';
+                        form.reset();
+                    } else {
+                        alert("Submission failed: " + (result.message || "Please check details and try again."));
+                    }
+                } catch (error) {
+                    console.error(error);
+                    alert("Network error. Please check your internet connection.");
+                } finally {
+                    submitBtn.innerHTML = originalBtnHTML;
+                    submitBtn.disabled = false;
+                }
+            });
+        }
+    </script>
+</body>
+</html>
