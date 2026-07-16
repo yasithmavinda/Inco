@@ -1,7 +1,7 @@
 {
-  "name": "inco",
+  "name": "smartdrop",
   "version": "1.0.0",
-  "description": "Inco project",
+  "description": "Smartdrop project",
   "scripts": {
     "dev": "npx live-server"
   }

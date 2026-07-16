@@ -15,6 +15,9 @@ window.addEventListener('DOMContentLoaded', () => {
     setupThemeToggle();
     setupFAQAccordion();
     setupOrderModal();
+    setupSpotlightCards();
+    setupScrollAnimations();
+    setupLoadAnimations();
 });
 
 // 1. Lenis Smooth Scroll Integration
@@ -245,7 +248,7 @@ function initThreeJSMailbox() {
         lockCore.position.set(-0.35, -0.5, 0.201);
         mailboxGroup.add(lockCore);
 
-        // 2H. Brand Wordmark (INCO)
+        // 2H. Brand Wordmark (VISIONIX)
         const wordmarkTexture = createWordmarkTexture();
         const wordmarkMat = new THREE.MeshStandardMaterial({
             map: wordmarkTexture,
@@ -257,8 +260,7 @@ function initThreeJSMailbox() {
         wordmarkPlane.position.set(0.35, -0.65, 0.201);
         mailboxGroup.add(wordmarkPlane);
 
-        // Setup GSAP Scroll animations
-        setupGSAPScroll();
+
 
         // Listen for Window Resize
         window.addEventListener('resize', onWindowResize);
@@ -335,7 +337,7 @@ function initThreeJSMailbox() {
         if (ctx.letterSpacing !== undefined) {
             ctx.letterSpacing = '4px';
         }
-        ctx.fillText('INCO', 240, 32);
+        ctx.fillText('VISIONIX', 240, 32);
         
         const texture = new THREE.CanvasTexture(canvas);
         texture.minFilter = THREE.LinearFilter;
@@ -397,215 +399,7 @@ function initThreeJSMailbox() {
         }
     };
 
-    // 3. GSAP ScrollTrigger Sequence Coordinator
-    function setupGSAPScroll() {
-        // Base scroll progress listener
-        let scrollProgress = 0;
-        ScrollTrigger.create({
-            trigger: 'body',
-            start: 'top top',
-            end: 'bottom bottom',
-            onUpdate: self => {
-                scrollProgress = self.progress;
-            }
-        });
 
-        // Hide/Show canvas overlay labels when leaving/entering the reveal section
-        ScrollTrigger.create({
-            trigger: '#reveal',
-            start: 'top 60%',
-            end: 'bottom 40%',
-            onLeave: () => { activeStep = null; },
-            onLeaveBack: () => { activeStep = null; }
-        });
-
-        // Track each step inside the sticky section
-        const steps = document.querySelectorAll('.reveal-step');
-        steps.forEach(step => {
-            const stepName = step.getAttribute('data-step');
-            ScrollTrigger.create({
-                trigger: step,
-                start: 'top 50%',
-                end: 'bottom 50%',
-                onEnter: () => {
-                    activeStep = stepName;
-                    updateOledScreen(stepName);
-                },
-                onEnterBack: () => {
-                    activeStep = stepName;
-                    updateOledScreen(stepName);
-                }
-            });
-        });
-
-        // 3D Reveal Timeline (Animates mailbox position/rotation through the sticky section)
-        const revealTL = gsap.timeline({
-            scrollTrigger: {
-                trigger: '#reveal',
-                start: 'top top',
-                end: 'bottom bottom',
-                scrub: 1.0,
-            }
-        });
-
-        // Transition from Hero (right) to Reveal Section Step 1 (Solar Panel focus on the left)
-        revealTL.to(mailboxGroup.position, { x: -1.2, y: -0.4, z: 0.1, duration: 1.5 })
-                .to(mailboxGroup.scale, { x: 1.1, y: 1.1, z: 1.1, duration: 1.5 }, 0)
-                .to(mailboxGroup.rotation, { x: 0.8, y: 0.45, z: 0, duration: 1.5 }, 0)
-                .to(camera.position, { z: 5.5, duration: 1.5 }, 0);
-
-        // Step 1 to Step 2 (Front LED accent focus on the left)
-        revealTL.to(mailboxGroup.rotation, { x: 0.05, y: 0.15, z: 0, duration: 1.5 })
-                .to(mailboxGroup.position, { x: -1.2, y: 0, z: 0.1, duration: 1.5 }, "<")
-                .to(camera.position, { z: 5.7, duration: 1.5 }, "<");
-
-        // Step 2 to Step 3 (Right OLED Display focus on the left)
-        revealTL.to(mailboxGroup.rotation, { x: 0.1, y: 1.6, z: 0, duration: 1.5 })
-                .to(mailboxGroup.position, { x: -1.05, y: -0.1, z: 0.4, duration: 1.5 }, "<")
-                .to(camera.position, { z: 5.3, duration: 1.5 }, "<");
-
-        // Step 3 to Step 4 (Front-Left Security Lock focus on the left)
-        revealTL.to(mailboxGroup.rotation, { x: 0.05, y: -0.55, z: 0, duration: 1.5 })
-                .to(mailboxGroup.position, { x: -1.2, y: 0, z: 0.1, duration: 1.5 }, "<")
-                .to(camera.position, { z: 5.5, duration: 1.5 }, "<");
-
-        // Step 4 to Step 5 (Bottom Mount Flange / Bracket focus on the left)
-        revealTL.to(mailboxGroup.rotation, { x: -0.25, y: 3.14, z: 0, duration: 1.5 })
-                .to(mailboxGroup.position, { x: -1.2, y: 0.5, z: 0, duration: 1.5 }, "<")
-                .to(camera.position, { z: 5.7, duration: 1.5 }, "<");
-
-        // --- SUBSEQUENT SECTIONS POSITION MAPS ---
-        
-        // Solar Feature Section ScrollTrigger
-        ScrollTrigger.create({
-            trigger: '#features',
-            start: 'top 80%',
-            end: 'bottom 20%',
-            onEnter: () => {
-                activeStep = null;
-                gsap.to(mailboxGroup.position, { x: 1.25, y: -0.38, z: 0, duration: 1.2, overwrite: 'auto' });
-                gsap.to(mailboxGroup.rotation, { x: 0.75, y: 0.35, z: 0, duration: 1.2, overwrite: 'auto' });
-                gsap.to(mailboxGroup.scale, { x: 1.1, y: 1.1, z: 1.1, duration: 1.2, overwrite: 'auto' });
-                gsap.to(camera.position, { z: 5.5, duration: 1.2, overwrite: 'auto' });
-                updateOledCanvasText("SOLAR STRENGTH", "GRID STATUS: 100%", "SOLAR: ACTIVE");
-            }
-        });
-
-        // Proximity Phone Notification Section ScrollTrigger
-        ScrollTrigger.create({
-            trigger: '.notifications-section',
-            start: 'top 70%',
-            end: 'bottom 30%',
-            onEnter: () => {
-                activeStep = null;
-                // Move mailbox left, next to the phone mockup
-                gsap.to(mailboxGroup.position, { x: -0.45, y: -0.15, z: 0.1, duration: 1.2, overwrite: 'auto' });
-                gsap.to(mailboxGroup.rotation, { x: 0.05, y: 0.25, z: 0, duration: 1.2, overwrite: 'auto' });
-                gsap.to(mailboxGroup.scale, { x: 1.1, y: 1.1, z: 1.1, duration: 1.2, overwrite: 'auto' });
-                gsap.to(camera.position, { z: 5.7, duration: 1.2, overwrite: 'auto' });
-                updateOledCanvasText("LED PULSE TEST", "STATUS: BLUE", "MAIL DETECTED");
-
-                // Pulse LED and light brightness
-                gsap.to(ledPointLight, { intensity: 4.5, duration: 0.6, yoyo: true, repeat: 3 });
-
-                // Trigger phone notification banner
-                const banner = document.getElementById('notif-1');
-                if (banner) banner.classList.add('animate');
-            },
-            onLeaveBack: () => {
-                const banner = document.getElementById('notif-1');
-                if (banner) banner.classList.remove('animate');
-            }
-        });
-
-        // Physical Security Section ScrollTrigger
-        ScrollTrigger.create({
-            trigger: '.security-section',
-            start: 'top 70%',
-            end: 'bottom 30%',
-            onEnter: () => {
-                activeStep = null;
-                // Zoom in on lock (left-front angle)
-                gsap.to(mailboxGroup.position, { x: 1.15, y: 0, z: 0.5, duration: 1.2, overwrite: 'auto' });
-                gsap.to(mailboxGroup.rotation, { x: 0.0, y: -0.45, z: 0, duration: 1.2, overwrite: 'auto' });
-                gsap.to(mailboxGroup.scale, { x: 1.2, y: 1.2, z: 1.2, duration: 1.2, overwrite: 'auto' });
-                gsap.to(camera.position, { z: 5.3, duration: 1.2, overwrite: 'auto' });
-                updateOledCanvasText("LID SECURITY", "LOCK CORE: ENGAGED", "TAMPER SENSOR: ON");
-            }
-        });
-
-
-
-        // FAQ Section (Slow rotation on the left side)
-        ScrollTrigger.create({
-            trigger: '#faq',
-            start: 'top 80%',
-            end: 'bottom 20%',
-            onEnter: () => {
-                activeStep = null;
-                gsap.to(mailboxGroup.position, { x: -1.25, y: -0.2, z: -0.4, duration: 1.5, overwrite: 'auto' });
-                gsap.to(mailboxGroup.rotation, { x: 0.1, y: 0.5, z: 0, duration: 1.5, overwrite: 'auto' });
-                gsap.to(mailboxGroup.scale, { x: 1.05, y: 1.05, z: 1.05, duration: 1.5, overwrite: 'auto' });
-                gsap.to(camera.position, { z: 5.7, duration: 1.5, overwrite: 'auto' });
-            }
-        });
-
-        // Final CTA Section (Fade out opacity behind center copy)
-        ScrollTrigger.create({
-            trigger: '.final-cta-section',
-            start: 'top 80%',
-            end: 'bottom bottom',
-            onEnter: () => {
-                activeStep = null;
-                gsap.to(mailboxGroup.position, { x: 0, y: -0.4, z: -1.2, duration: 1.5, overwrite: 'auto' });
-                gsap.to(mailboxGroup.rotation, { x: 0.15, y: -0.3, z: 0, duration: 1.5, overwrite: 'auto' });
-                gsap.to(mailboxGroup.scale, { x: 1.15, y: 1.15, z: 1.15, duration: 1.5, overwrite: 'auto' });
-                gsap.to(camera.position, { z: 6.0, duration: 1.5, overwrite: 'auto' });
-                container.style.opacity = '0.35';
-            },
-            onLeaveBack: () => {
-                container.style.opacity = '1.0';
-            }
-        });
-    }
-
-    // Coordinate projection from 3D to 2D screen coordinates
-    function updateProjectedLabels() {
-        const anchorsMap = {
-            solar: anchors.solar,
-            led: anchors.led,
-            display: anchors.display,
-            lock: anchors.lock,
-            bracket: anchors.bracket
-        };
-
-        for (const [key, localVector] of Object.entries(anchorsMap)) {
-            const tooltip = document.getElementById(`tooltip-${key}`);
-            if (!tooltip) continue;
-
-            if (activeStep === key) {
-                tooltip.classList.add('active');
-            } else {
-                tooltip.classList.remove('active');
-                continue;
-            }
-
-            // Project local mesh vector into absolute world coordinates
-            const worldVector = localVector.clone();
-            mailboxGroup.localToWorld(worldVector);
-            
-            // Project into Camera view space NDC
-            worldVector.project(camera);
-
-            // Convert NDC coordinates (-1 to 1) to screen pixels (0 to width/height)
-            const x = (worldVector.x * 0.5 + 0.5) * window.innerWidth;
-            const y = (-(worldVector.y * 0.5) + 0.5) * window.innerHeight;
-
-            // Apply style positions
-            tooltip.style.left = `${x}px`;
-            tooltip.style.top = `${y}px`;
-        }
-    }
 
     // Window Resize Adjuster
     function onWindowResize() {
@@ -619,13 +413,19 @@ function initThreeJSMailbox() {
         const delta = clock.getDelta();
         const time = clock.getElapsedTime();
 
-        // 1. Gentle float breathing rotation (Only active in Hero Section, where scroll = 0)
-        const currentScroll = window.scrollY;
-        if (currentScroll < 50) {
-            mailboxGroup.rotation.y = -0.4 + Math.sin(time * 0.6) * 0.04;
-            mailboxGroup.rotation.x = 0.2 + Math.cos(time * 0.6) * 0.02;
-            mailboxGroup.position.y = -0.25 + Math.sin(time * 1.2) * 0.025;
+        // 1. Continuous rotation & gentle float
+        const isMobile = window.innerWidth <= 768;
+        
+        mailboxGroup.rotation.y = time * 0.4;
+        mailboxGroup.rotation.x = 0.15 + Math.cos(time * 0.6) * 0.02;
+        
+        if (isMobile) {
+            mailboxGroup.position.x = 0;
+            mailboxGroup.position.y = 0.8 + Math.sin(time * 1.2) * 0.025;
+            mailboxGroup.scale.set(1.1, 1.1, 1.1);
+        } else {
             mailboxGroup.position.x = 1.35;
+            mailboxGroup.position.y = -0.25 + Math.sin(time * 1.2) * 0.025;
             mailboxGroup.scale.set(1.45, 1.45, 1.45);
         }
 
@@ -633,14 +433,7 @@ function initThreeJSMailbox() {
         if (ledMesh) {
             const pulse = Math.sin(time * 3.0) * 0.3 + 0.7; // 0.4 to 1.0
             ledMesh.material.emissiveIntensity = 2.5 + pulse * 1.5;
-            if (currentScroll < 50 || activeStep === 'led') {
-                ledPointLight.intensity = 1.2 + pulse * 0.8;
-            }
-        }
-
-        // 3. Update coordinate tooltips overlay
-        if (activeStep) {
-            updateProjectedLabels();
+            ledPointLight.intensity = 1.2 + pulse * 0.8;
         }
 
         renderer.render(scene, camera);
@@ -691,6 +484,7 @@ function setupDockAnimation() {
             moveBubble(link);
         });
         link.addEventListener('click', () => {
+            if (link.id === 'open-order-modal-nav') return;
             links.forEach(l => l.classList.remove('active'));
             link.classList.add('active');
         });
@@ -702,7 +496,7 @@ function setupDockAnimation() {
     });
 
     // Update active nav dot as user scrolls page
-    const sections = ['#hero', '#reveal', '#features', '#faq'];
+    const sections = ['#hero', '#features', '#feedback', '#faq', '#pricing'];
     sections.forEach(selector => {
         const sec = document.querySelector(selector);
         if (!sec) return;
@@ -806,7 +600,7 @@ function setupFAQAccordion() {
 // 8. Order Modal & Form Submission
 function setupOrderModal() {
     const modal = document.getElementById('order-modal');
-    const openBtns = [document.getElementById('open-order-modal'), document.getElementById('open-order-modal-footer')];
+    const openBtns = [];
     const closeBtns = [document.getElementById('close-order-modal'), document.getElementById('close-success-btn')];
     const form = document.getElementById('order-form');
     const formContainer = document.getElementById('order-form-container');
@@ -874,4 +668,161 @@ function setupOrderModal() {
             submitBtn.disabled = false;
         }
     });
+}
+
+// 9. Spotlight Glow Hover Effect
+function setupSpotlightCards() {
+    const cards = document.querySelectorAll('.feature-card, .pricing-card');
+    if (cards.length === 0) return;
+
+    document.addEventListener('pointermove', (e) => {
+        cards.forEach(card => {
+            const rect = card.getBoundingClientRect();
+            // Calculate mouse position relative to the card
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // Normalize xp and yp (0 to 1) within the card
+            const xp = (x / rect.width).toFixed(2);
+            const yp = (y / rect.height).toFixed(2);
+
+            card.style.setProperty('--x', x.toFixed(2));
+            card.style.setProperty('--y', y.toFixed(2));
+            card.style.setProperty('--xp', xp);
+            card.style.setProperty('--yp', yp);
+        });
+    });
+}
+
+// 10. Scroll Reveal Animations
+function setupScrollAnimations() {
+    // Animate section headers
+    const headers = document.querySelectorAll('.section-title, .eyebrow');
+    headers.forEach(header => {
+        gsap.from(header, {
+            scrollTrigger: {
+                trigger: header,
+                start: "top 85%",
+                toggleActions: "play none none reverse"
+            },
+            y: 30,
+            opacity: 0,
+            duration: 0.8,
+            ease: "power3.out"
+        });
+    });
+
+    // Stagger feature cards
+    if (document.querySelector('.features-grid')) {
+        gsap.from('.feature-card', {
+            scrollTrigger: {
+                trigger: '.features-grid',
+                start: "top 80%",
+                toggleActions: "play none none reverse"
+            },
+            y: 50,
+            opacity: 0,
+            duration: 0.8,
+            stagger: 0.1,
+            ease: "power3.out"
+        });
+    }
+
+    // Stagger stats
+    if (document.querySelector('.stats-grid')) {
+        gsap.from('.stat-item', {
+            scrollTrigger: {
+                trigger: '.stats-grid',
+                start: "top 85%",
+                toggleActions: "play none none reverse"
+            },
+            y: 40,
+            opacity: 0,
+            duration: 0.8,
+            stagger: 0.15,
+            ease: "power3.out"
+        });
+    }
+
+    // Stagger pricing cards
+    if (document.querySelector('.pricing-grid')) {
+        gsap.from('.pricing-card', {
+            scrollTrigger: {
+                trigger: '.pricing-grid',
+                start: "top 80%",
+                toggleActions: "play none none reverse"
+            },
+            y: 50,
+            opacity: 0,
+            duration: 0.8,
+            stagger: 0.15,
+            ease: "power3.out"
+        });
+    }
+
+    // Stagger testimonials
+    if (document.querySelector('.testimonials-grid')) {
+        gsap.from('.testimonial-card', {
+            scrollTrigger: {
+                trigger: '.testimonials-grid',
+                start: "top 80%",
+                toggleActions: "play none none reverse"
+            },
+            y: 50,
+            opacity: 0,
+            duration: 0.8,
+            stagger: 0.15,
+            ease: "power3.out"
+        });
+    }
+
+    // Stagger FAQ items
+    if (document.querySelector('.faq-list')) {
+        gsap.from('.faq-item', {
+            scrollTrigger: {
+                trigger: '.faq-list',
+                start: "top 80%",
+                toggleActions: "play none none reverse"
+            },
+            y: 30,
+            opacity: 0,
+            duration: 0.6,
+            stagger: 0.1,
+            ease: "power2.out"
+        });
+    }
+}
+
+// 11. Initial Page Load Animations
+function setupLoadAnimations() {
+    const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+
+    // Hide elements initially via GSAP
+    gsap.set('.floating-header, .top-right-bar', { y: -50, opacity: 0 });
+    gsap.set('.hero-content .eyebrow, .hero-content .headline, .hero-content .subheadline, .hero-content .cta-group', { y: 30, opacity: 0 });
+    gsap.set('#mailbox-canvas-container', { opacity: 0, scale: 0.95 });
+
+    // Animate Nav bars down
+    tl.to('.floating-header, .top-right-bar', {
+        y: 0,
+        opacity: 1,
+        duration: 1,
+        stagger: 0.1
+    }, "+=0.2")
+    
+    // Animate Hero text up
+    .to('.hero-content .eyebrow, .hero-content .headline, .hero-content .subheadline, .hero-content .cta-group', {
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        stagger: 0.15
+    }, "-=0.6")
+    
+    // Fade in 3D Mailbox
+    .to('#mailbox-canvas-container', {
+        opacity: 1,
+        scale: 1,
+        duration: 1.5,
+        ease: "power2.out"
+    }, "-=0.6");
 }
